@@ -4,7 +4,6 @@ import 'package:contes_etoiles/views/screens/narrator_selection/controller/narra
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../../utils/app_strings.dart';
 import '../../custom_widget/custom_scaffold.dart';
@@ -31,16 +30,11 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                       InkWell(
                         onTap: () {
                           controller.selectedNarrator.value = 'Ambre';
-                          Get.toNamed(kAmbreNarratorListOfBookRoute);
+                          Get.toNamed(kStoriesListingRoute, arguments: {"selectedNarrator": "Ambre"});
                         },
                         child: CircleAvatar(
-                          backgroundColor:
-                              controller.selectedNarrator.value == 'Ambre'
-                                  ? kWhiteColor
-                                  : Colors.transparent,
-                          radius: controller.selectedNarrator.value == 'Ambre'
-                              ? 112
-                              : 110,
+                          backgroundColor: controller.selectedNarrator.value == 'Ambre' ? kWhiteColor : Colors.transparent,
+                          radius: controller.selectedNarrator.value == 'Ambre' ? 112 : 110,
                           child: Image.asset(
                             kAmbreImg,
                             width: 220,
@@ -57,19 +51,13 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                           fontSize: 52.sp,
                           fontWeight: FontWeight.w400,
                           fontFamily: 'Family',
-                          color: controller.selectedNarrator.value == 'Ambre'
-                              ? kWhiteColor
-                              : kPrimaryColor,
+                          color: controller.selectedNarrator.value == 'Ambre' ? kWhiteColor : kPrimaryColor,
                         ),
                       ),
                       //SizedBox(height: 5.h,),
                       Text(
                         'Voix enfantine et douce.',
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Metropolis',
-                            color: Color(0xffC1C1C1)),
+                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, fontFamily: 'Metropolis', color: Color(0xffC1C1C1)),
                       ),
                     ],
                   ),
@@ -83,16 +71,11 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                       InkWell(
                         onTap: () {
                           controller.selectedNarrator.value = 'Ewan';
-                          Get.toNamed(kEwanNarratorListOfBookRoute);
+                          Get.toNamed(kStoriesListingRoute, arguments: {"selectedNarrator": "Ewan"});
                         },
                         child: CircleAvatar(
-                          backgroundColor:
-                              controller.selectedNarrator.value == 'Ewan'
-                                  ? kWhiteColor
-                                  : Colors.transparent,
-                          radius: controller.selectedNarrator.value == 'Ewan'
-                              ? 112
-                              : 110,
+                          backgroundColor: controller.selectedNarrator.value == 'Ewan' ? kWhiteColor : Colors.transparent,
+                          radius: controller.selectedNarrator.value == 'Ewan' ? 112 : 110,
                           child: Image.asset(
                             kEwanImg,
                             width: 220,
@@ -109,24 +92,18 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                           fontSize: 52.sp,
                           fontWeight: FontWeight.w400,
                           fontFamily: 'Family',
-                          color: controller.selectedNarrator.value == 'Ewan'
-                              ? kWhiteColor
-                              : kPrimaryColor,
+                          color: controller.selectedNarrator.value == 'Ewan' ? kWhiteColor : kPrimaryColor,
                         ),
                       ),
                       //SizedBox(height: 5.h,),
                       Text(
                         'Voix adulte et calme.',
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w400,
-                            fontFamily: 'Metropolis',
-                            color: Color(0xffC1C1C1)),
+                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, fontFamily: 'Metropolis', color: Color(0xffC1C1C1)),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 80.h,)
+                //SizedBox(height: 80.h,)
               ],
             ),
           )),
