@@ -11,7 +11,8 @@ class CustomScaffold extends StatefulWidget {
   final String screenName;
   final int bottomBarIndex;
   final String? subScreenName;
-  final Function? onWillPop, gestureDetectorOnTap, onBackButtonPressed, gestureDetectorOnPanDown, onNotificationListener;
+  final Function? onWillPop, gestureDetectorOnTap, gestureDetectorOnPanDown, onNotificationListener;
+  VoidCallback? onBackButtonPressed;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final Widget? gridview;
   final bool isBackIcon;
@@ -28,7 +29,7 @@ class CustomScaffold extends StatefulWidget {
 
   CustomScaffold(
       {required this.className,
-        this.isBackIcon = true,
+      this.isBackIcon = true,
       required this.screenName,
       this.subScreenName,
       this.onWillPop,
@@ -38,7 +39,7 @@ class CustomScaffold extends StatefulWidget {
       this.onNotificationListener,
       required this.scaffoldKey,
       required this.body,
-        this.padding =  const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
+      this.padding = const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
       this.gridview,
       this.bottomBarIndex = 0,
       this.showAppBarProfile = false,
@@ -46,9 +47,9 @@ class CustomScaffold extends StatefulWidget {
       this.showActionButton = false,
       this.isFullBody = false,
       this.bottomNavigationBar,
-      this.floatingActionButton, this.leadingWidth = 56,
+      this.floatingActionButton,
+      this.leadingWidth = 56,
       this.listOfPopupMenuItems = const [],
-
       this.actions = const []});
 
   @override
@@ -62,7 +63,7 @@ class _CustomScaffoldState extends State<CustomScaffold> {
         SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark));
     return WillPopScope(
         onWillPop: () {
-          if (widget.onWillPop!= null) {
+          if (widget.onWillPop != null) {
             return widget.onWillPop!();
           } else {
             return Future.value(true);
@@ -88,23 +89,29 @@ class _CustomScaffoldState extends State<CustomScaffold> {
               }
             },
             child: Scaffold(
-          //    drawer: buildMyDrawer(),
+              //    drawer: buildMyDrawer(),
               resizeToAvoidBottomInset: true,
               backgroundColor: (kBlackColor),
               key: widget.scaffoldKey,
               appBar: PreferredSize(
                   preferredSize: Size.fromHeight(widget.isFullBody ? 70.0 : 60),
-                  child: CustomAppBar(leadingWidth: widget.leadingWidth, backIcon: widget.isBackIcon,
-                      actions: widget.actions ?? [], scaffoldKey: widget.scaffoldKey, screenTitle: widget.screenName, className: widget.className)),
+                  child: CustomAppBar(
+                      leadingWidth: widget.leadingWidth,
+                      backIcon: widget.isBackIcon,
+                      onBackButtonTap: widget.onBackButtonPressed,
+                      actions: widget.actions ?? [],
+                      scaffoldKey: widget.scaffoldKey,
+                      screenTitle: widget.screenName,
+                      className: widget.className)),
               body: widget.isFullBody
                   ? Container(
                       child: widget.body,
                       decoration: BoxDecoration(
-                      //     image: DecorationImage(
-                      //   image: fs.Svg(kBlueBgWithEffect),
-                      //   fit: BoxFit.cover,
-                      // )
-                      ),
+                          //     image: DecorationImage(
+                          //   image: fs.Svg(kBlueBgWithEffect),
+                          //   fit: BoxFit.cover,
+                          // )
+                          ),
                     )
                   : Container(
                       width: Get.width,

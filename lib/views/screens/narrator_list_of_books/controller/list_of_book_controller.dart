@@ -1,3 +1,5 @@
+import 'package:contes_etoiles/database/database.dart';
+import 'package:contes_etoiles/database/local_db_services.dart';
 import 'package:contes_etoiles/firebase_services/firebase_service_helper.dart';
 import 'package:contes_etoiles/model/stories_model.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,9 @@ class StoriesListingController extends GetxController {
 
   // RxList<StoryModel> storyTileList = RxList();
   RxList<StoriesModel> storyTileList = RxList();
+  RxList<Story> storyListLocal = RxList();
   RxString selectedNarrator = "".obs;
+  RxBool showLoader = false.obs;
   @override
   void onInit() {
     // TODO: implement onInit
@@ -27,8 +31,22 @@ class StoriesListingController extends GetxController {
 
   getAllStories(String selectedNarrator) async {
     storyTileList.clear();
+    showLoader.value = true;
     print('=============selected Narrator $selectedNarrator');
     storyTileList.value = await FirebaseHelper.getAllStoriesByNarrator(selectedNarrator);
+    List<Story> story = await LocalDbServices.allStoriesData;
+    //storyListLocal.value = story;
+    if (storyTileList.isNotEmpty) {
+      for (StoriesModel storiesModel in storyTileList) {
+        if (story.indexWhere((element) => element.storyId == storiesModel.storyId) == -1) {
+          LocalDbServices.addDataToLocalStorage(storiesModel);
+        }
+      }
+      story.clear();
+      story = await LocalDbServices.allStoriesData;
+      storyListLocal.value = story;
+    }
+    showLoader.value = false;
     print('=================list length ${storyTileList.length}');
   }
 }

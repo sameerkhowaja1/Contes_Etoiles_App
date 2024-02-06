@@ -37,19 +37,33 @@ class StoriesListingScreen extends GetView<StoriesListingController> {
                 builder: (BuildContext context, loadingStatus) {
                   if (loadingStatus.connectionState == ConnectionState.done) {
                     return controller.storyTileList.isNotEmpty
-                        ? ListView.builder(
-                            itemCount: controller.storyTileList.length,
-                            shrinkWrap: true,
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                onTap: () {
-                                  Get.toNamed(kStoryPlayerRoute, arguments: {"storiesList": controller.storyTileList, "storyIndex": index});
-                                },
-                                child: CustomBookTileWidget(
-                                  storiesList: controller.storyTileList[index],
-                                ),
-                              );
-                            },
+                        ? Obx(
+                            () => ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              itemCount: controller.storyTileList.length,
+                              shrinkWrap: true,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () async {
+                                    bool value = await Get.toNamed(kStoryPlayerRoute, arguments: {
+                                      "storiesList": controller.storyTileList,
+                                      "storyIndex": index,
+                                      "storyLocal": controller.storyListLocal
+                                    });
+
+                                    if (value == true) {
+                                      print('===============hey I am true');
+                                      controller.getAllStories(controller.selectedNarrator.value);
+                                      //controller.storyListLocal.value = value;
+                                    }
+                                  },
+                                  child: CustomBookTileWidget(
+                                    storyLocal: controller.storyListLocal[index],
+                                    storiesList: controller.storyTileList[index],
+                                  ),
+                                );
+                              },
+                            ),
                           )
                         : Container(
                             height: Get.height,

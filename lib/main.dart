@@ -8,10 +8,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
+import 'database/database.dart';
+
+final database = AppDatabase();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Firebase.initializeApp();
+
   // FirebaseHelper.addStoriesData(StoriesModel.addDataToFirebase);
   runApp(const MyApp());
 }

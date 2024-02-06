@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:contes_etoiles/database/local_db_services.dart';
 import 'package:contes_etoiles/utils/app_colors.dart';
 import 'package:contes_etoiles/views/screens/story_screen/controller/story_player_screen_controller.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../database/database.dart';
 import '../../utils/app_images.dart';
 
 class SeekBar extends StatelessWidget {
@@ -90,10 +92,17 @@ class SeekBarState extends State<SeekBar> {
               child: Slider(
                 min: 0.0,
                 max: duration.inMilliseconds.toDouble(),
-                value: min(controller.dragValue?.value ?? position.inMilliseconds.toDouble(), duration.inMilliseconds.toDouble()),
+                value: min(
+                    controller.dragValue?.value != null
+                        ? controller.dragValue!.value
+                        : controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble()
+                            ? controller.setPlayerDuration().inMilliseconds.toDouble()
+                            : position.inMilliseconds.toDouble(),
+                    duration.inMilliseconds.toDouble()),
                 onChanged: (value) {
                   // setState(() {
                   controller.dragValue?.value = value;
+                  print('===========on change $value');
                   //});
                   if (onChanged != null) {
                     onChanged!(Duration(milliseconds: value.round()));
@@ -121,7 +130,11 @@ class SeekBarState extends State<SeekBar> {
                 Expanded(
                   flex: 1,
                   child: Text(
-                    RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$').firstMatch("${position}")?.group(1) ?? '${position}',
+                    RegExp(r'((^0*[1-9]\d*:)?\d{2}:\d{2})\.\d+$')
+                            .firstMatch(
+                                "${controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble() ? controller.setPlayerDuration() : position}")
+                            ?.group(1) ??
+                        '${controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble() ? controller.setPlayerDuration() : position}',
                     style: TextStyle(
                       fontSize: 14.sp,
                       fontWeight: FontWeight.w600,
@@ -135,7 +148,25 @@ class SeekBarState extends State<SeekBar> {
                     child: IconButton(
                         onPressed: controller.storyIndex.value == 0
                             ? null
-                            : () {
+                            : () async {
+                                print(
+                                    '===============backward btn clicked${controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble()}');
+                                print(
+                                    '===============backward btn clicked 2 --- ${controller.setPlayerDuration().inMilliseconds.toDouble()} ==== ${position.inMilliseconds.toDouble()}');
+
+                                if (controller.setPlayerDuration().inMilliseconds.toDouble() < position.inMilliseconds.toDouble()) {
+                                  /* controller.storyLocal[controller.storyIndex.value]
+                                      .copyWith(durationPlayed: position.toString(), remainingDuration: _remaining.toString());*/
+                                  await LocalDbServices.updateStoriesTime(
+                                      controller.storyTileList[controller.storyIndex.value].storyId, position.toString(), _remaining.toString());
+
+                                  print('=================played duraiton ${position.inSeconds.toDouble()}');
+                                  Story storyyyyy = await LocalDbServices.storyById(controller.storyLocal[controller.storyIndex.value].storyId);
+                                  print('=================played duraiton get backward ${storyyyyy.durationPlayed}');
+                                  controller.storyLocal[controller.storyIndex.value] = storyyyyy;
+                                  print('=================played duraiton set ${controller.storyLocal[controller.storyIndex.value].durationPlayed}');
+                                }
+                                controller.player.stop();
                                 controller.storyIndex--;
                                 controller.initStory();
                               },
@@ -152,6 +183,30 @@ class SeekBarState extends State<SeekBar> {
                       /*if (processingState == ProcessingState.ready) {
                         controller.player.play();
                       }*/
+
+                      print('===========position ${position.toString()}');
+                      print('===========position ${position.inSeconds.toDouble()}');
+
+                      //todo: add to update current status in local db on age change
+                      controller.audioPlayerPosition = position;
+                      controller.reamingAudioMinutes = _remaining;
+                      //todo: update played time to local db
+                      if (position.inMilliseconds.toDouble() > 0) {
+                        if (controller.totalDuration().inSeconds == position.inSeconds) {
+                          print('========hey its finisged');
+
+                          controller.updateStoryTimeInLocalDB(
+                              storyId: controller.storyTileList[controller.storyIndex.value].storyId, position: "", remaining: "");
+                        } else {
+                          controller.updateStoryTimeInLocalDB(
+                              storyId: controller.storyTileList[controller.storyIndex.value].storyId,
+                              position: position.toString(),
+                              remaining: _remaining.toString());
+                        }
+
+                        /*LocalDbServices.updateStoriesTime(
+                            controller.storyTileList[controller.storyIndex.value].storyId, position.toString(), _remaining.toString());*/
+                      }
                       if (processingState == ProcessingState.loading || processingState == ProcessingState.buffering) {
                         return Container(
                           margin: const EdgeInsets.all(8.0),
@@ -164,7 +219,17 @@ class SeekBarState extends State<SeekBar> {
                           padding: EdgeInsets.all(5),
                           decoration: BoxDecoration(color: kPrimaryColor, borderRadius: BorderRadius.circular(50)),
                           child: InkWell(
-                            onTap: controller.player.play,
+                            onTap: () {
+                              print(
+                                  '=============controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble() ${controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble()}');
+                              if (controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble()) {
+                                controller.player.seek(controller.setPlayerDuration());
+                              }
+                              /*if (controller.setPlayerDuration().inMilliseconds.toDouble() == controller.totalDuration().inMilliseconds.toDouble()) {
+                                controller.player.seek(Duration.zero);
+                              }*/
+                              controller.player.play();
+                            },
                             child: const Icon(
                               Icons.play_arrow_rounded,
                               size: 60,
@@ -218,7 +283,27 @@ class SeekBarState extends State<SeekBar> {
                       () => IconButton(
                           onPressed: controller.storyIndex.value == controller.storyTileList.length - 1
                               ? null
-                              : () {
+                              : () async {
+                                  controller.player.stop();
+                                  print(
+                                      '===============forward btn clicked${controller.setPlayerDuration().inMilliseconds.toDouble() < position.inMilliseconds.toDouble()}');
+                                  print(
+                                      '===============forward btn clicked 2 --- ${controller.setPlayerDuration().inMilliseconds.toDouble()} ==== ${position.inMilliseconds.toDouble()}');
+                                  if (controller.setPlayerDuration().inMilliseconds.toDouble() < position.inMilliseconds.toDouble()) {
+                                    /*controller.storyLocal[controller.storyIndex.value]
+                                        .copyWith(durationPlayed: position.toString(), remainingDuration: _remaining.toString());*/
+
+                                    await LocalDbServices.updateStoriesTime(
+                                        controller.storyTileList[controller.storyIndex.value].storyId, position.toString(), _remaining.toString());
+
+                                    print('=================played duraiton ${position.inSeconds.toDouble()}');
+                                    Story storyyyyy = await LocalDbServices.storyById(controller.storyLocal[controller.storyIndex.value].storyId);
+                                    print('=================played duraiton get ${storyyyyy.durationPlayed}');
+                                    controller.storyLocal[controller.storyIndex.value] = storyyyyy;
+                                    print(
+                                        '=================played duraiton set ${controller.storyLocal[controller.storyIndex.value].durationPlayed}');
+                                  }
+
                                   controller.storyIndex++;
                                   controller.initStory();
                                 },
@@ -258,7 +343,12 @@ class SeekBarState extends State<SeekBar> {
     );
   }
 
-  Duration get _remaining => duration - position;
+  Duration get _remaining {
+    if (controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble()) {
+      return duration - controller.setPlayerDuration();
+    }
+    return duration - position;
+  }
 }
 
 class HiddenThumbComponentShape extends SliderComponentShape {

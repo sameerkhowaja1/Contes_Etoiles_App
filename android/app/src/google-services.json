@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "343923502564",
-    "project_id": "contes-etoiles",
-    "storage_bucket": "contes-etoiles.appspot.com"
+    "project_number": "947453020452",
+    "project_id": "contes-etoiles-app",
+    "storage_bucket": "contes-etoiles-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:343923502564:android:76f79a065f0085bd57ebf1",
+        "mobilesdk_app_id": "1:947453020452:android:86ee547907a5cf1b820bb1",
         "android_client_info": {
           "package_name": "com.example.contes_etoiles"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyD8QcVzIgdPDiQOBFdWkPPCgdHLghrm3q8"
+          "current_key": "AIzaSyCfmLZJgHFeN2YGgvKY1QoQnvFoqch_YOY"
         }
       ],
       "services": {

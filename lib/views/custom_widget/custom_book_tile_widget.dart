@@ -1,18 +1,41 @@
+import 'dart:math';
+
 import 'package:contes_etoiles/model/stories_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
+import '../../database/database.dart';
 import '../../utils/app_colors.dart';
 
 class CustomBookTileWidget extends StatelessWidget {
   final StoriesModel storiesList;
-  CustomBookTileWidget({super.key, required this.storiesList});
+  final Story storyLocal;
+  CustomBookTileWidget({super.key, required this.storiesList, required this.storyLocal});
 
   @override
   Widget build(BuildContext context) {
     List<String> duration = storiesList.totalDuration.split(":");
     String totalDuration = duration[0] != "00" ? " (${duration[0]} hr. ${duration[1]} min. ${duration[2]})" : " (${duration[1]} min. ${duration[2]})";
+
+    DateTime dateTime = DateFormat("hh:mm:ss").parse(storiesList.totalDuration);
+    Duration totalStoryDuration =
+        Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond);
+    print('=================totalStoryDuration.inMilliseconds.toDouble() ${totalStoryDuration.inMilliseconds.toDouble()}');
+    print('=================storiesList.durationPlayed ${storyLocal.durationPlayed}');
+
+    //Get Played Duration of story
+    Duration playedDuration = Duration();
+    if (storyLocal.durationPlayed.isNotEmpty) {
+      DateTime
+          dateTime = /*storyLocal.durationPlayed.split(":")[0] != "00"
+          ? DateFormat("hh:mm:ss.SSS").parse(storyLocal.durationPlayed)
+          : */
+          DateFormat("hh:mm:ss").parse(storyLocal.durationPlayed);
+      print('===============dateTime ${dateTime.hour}');
+      playedDuration = Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond);
+    }
     return Container(
         padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 10.w, right: 10.w),
         margin: EdgeInsets.only(top: 30.h),
@@ -87,12 +110,14 @@ class CustomBookTileWidget extends StatelessWidget {
                           data: SliderThemeData(
                               overlayShape: SliderComponentShape.noOverlay, thumbShape: RoundSliderOverlayShape(overlayRadius: 0), trackHeight: 10),
                           child: Slider(
-                            value: 60,
+                            value: min(storyLocal.durationPlayed.isNotEmpty ? playedDuration.inMilliseconds.toDouble() : 0,
+                                totalStoryDuration.inMilliseconds.toDouble()),
+                            //value: storyLocal.durationPlayed.isNotEmpty ? playedDuration.inMilliseconds.toDouble() : 0,
                             onChanged: (value) {},
                             activeColor: kPrimaryColor,
                             inactiveColor: kWhiteColor,
-                            min: 0,
-                            max: 100,
+                            min: 0.0,
+                            max: totalStoryDuration.inMilliseconds.toDouble(),
                           ))
                     ],
                   ),
