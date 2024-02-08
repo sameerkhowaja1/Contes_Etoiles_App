@@ -21,9 +21,11 @@ class StoriesListingScreen extends GetView<StoriesListingController> {
             margin: EdgeInsets.only(right: 20.w),
             child: Obx(
               () => Image.asset(
-                controller.selectedNarrator.value == "Ambre" ? kAmbreImg : kEwanImg,
-                width: 60.w,
-                height: 60.w,
+                controller.selectedNarrator.value == "Ambre"
+                    ? kAmbreImg
+                    : kEwanImg,
+                width: 65.w,
+                height: 65.w,
               ),
             ))
       ],
@@ -33,7 +35,8 @@ class StoriesListingScreen extends GetView<StoriesListingController> {
           mainAxisSize: MainAxisSize.min,
           children: [
             FutureBuilder(
-                future: controller.getAllStories(controller.selectedNarrator.value),
+                future:
+                    controller.getAllStories(controller.selectedNarrator.value),
                 builder: (BuildContext context, loadingStatus) {
                   if (loadingStatus.connectionState == ConnectionState.done) {
                     return controller.storyTileList.isNotEmpty
@@ -45,21 +48,28 @@ class StoriesListingScreen extends GetView<StoriesListingController> {
                               itemBuilder: (context, index) {
                                 return InkWell(
                                   onTap: () async {
-                                    bool value = await Get.toNamed(kStoryPlayerRoute, arguments: {
-                                      "storiesList": controller.storyTileList,
-                                      "storyIndex": index,
-                                      "storyLocal": controller.storyListLocal
-                                    });
+                                    bool value = await Get.toNamed(
+                                        kStoryPlayerRoute,
+                                        arguments: {
+                                          "storiesList":
+                                              controller.storyTileList,
+                                          "storyIndex": index,
+                                          "storyLocal":
+                                              controller.storyListLocal
+                                        });
 
                                     if (value == true) {
                                       print('===============hey I am true');
-                                      controller.getAllStories(controller.selectedNarrator.value);
+                                      controller.getAllStories(
+                                          controller.selectedNarrator.value);
                                       //controller.storyListLocal.value = value;
                                     }
                                   },
                                   child: CustomBookTileWidget(
-                                    storyLocal: controller.storyListLocal[index],
-                                    storiesList: controller.storyTileList[index],
+                                    storyLocal:
+                                        controller.storyListLocal[index],
+                                    storiesList:
+                                        controller.storyTileList[index],
                                   ),
                                 );
                               },
@@ -67,11 +77,16 @@ class StoriesListingScreen extends GetView<StoriesListingController> {
                           )
                         : Container(
                             height: Get.height,
-                            color: Theme.of(context).appBarTheme.backgroundColor,
+                            color:
+                                Theme.of(context).appBarTheme.backgroundColor,
                             child: Center(
                               child: Text("Stories not found",
                                   style: TextStyle(
-                                      fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w500, fontFamily: 'Metropolis', color: kBlackColor)),
+                                      fontSize: 18.sp,
+                                      height: 1.2,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: 'Metropolis',
+                                      color: kBlackColor)),
                             ),
                           );
                   } else {

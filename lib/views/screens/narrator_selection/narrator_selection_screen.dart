@@ -14,7 +14,7 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
     // TODO: implement build
     return CustomScaffold(
       className: runtimeType.toString(),
-      screenName: "Qui va te lire l’histoire?",
+      screenName: "Qui va te lire l’histoire?         ",
       scaffoldKey: controller.scaffoldKey,
       body: Container(
           color: kBlackColor,
@@ -30,11 +30,17 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                       InkWell(
                         onTap: () {
                           controller.selectedNarrator.value = 'Ambre';
-                          Get.toNamed(kStoriesListingRoute, arguments: {"selectedNarrator": "Ambre"});
+                          Get.toNamed(kStoriesListingRoute,
+                              arguments: {"selectedNarrator": "Ambre"});
                         },
                         child: CircleAvatar(
-                          backgroundColor: controller.selectedNarrator.value == 'Ambre' ? kWhiteColor : Colors.transparent,
-                          radius: controller.selectedNarrator.value == 'Ambre' ? 112 : 110,
+                          backgroundColor:
+                              controller.selectedNarrator.value == 'Ambre'
+                                  ? kWhiteColor
+                                  : Colors.transparent,
+                          radius: controller.selectedNarrator.value == 'Ambre'
+                              ? 112
+                              : 110,
                           child: Image.asset(
                             kAmbreImg,
                             width: 220,
@@ -51,13 +57,18 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                           fontSize: 52.sp,
                           fontWeight: FontWeight.w400,
                           fontFamily: 'Family',
-                          color: controller.selectedNarrator.value == 'Ambre' ? kWhiteColor : kPrimaryColor,
+                          color: controller.selectedNarrator.value == 'Ambre'
+                              ? kWhiteColor
+                              : kPrimaryColor,
                         ),
                       ),
-                      //SizedBox(height: 5.h,),
                       Text(
                         'Voix enfantine et douce.',
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, fontFamily: 'Metropolis', color: Color(0xffC1C1C1)),
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Metropolis',
+                            color: Color(0xffC1C1C1)),
                       ),
                     ],
                   ),
@@ -71,11 +82,17 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                       InkWell(
                         onTap: () {
                           controller.selectedNarrator.value = 'Ewan';
-                          Get.toNamed(kStoriesListingRoute, arguments: {"selectedNarrator": "Ewan"});
+                          Get.toNamed(kStoriesListingRoute,
+                              arguments: {"selectedNarrator": "Ewan"});
                         },
                         child: CircleAvatar(
-                          backgroundColor: controller.selectedNarrator.value == 'Ewan' ? kWhiteColor : Colors.transparent,
-                          radius: controller.selectedNarrator.value == 'Ewan' ? 112 : 110,
+                          backgroundColor:
+                              controller.selectedNarrator.value == 'Ewan'
+                                  ? kWhiteColor
+                                  : Colors.transparent,
+                          radius: controller.selectedNarrator.value == 'Ewan'
+                              ? 112
+                              : 110,
                           child: Image.asset(
                             kEwanImg,
                             width: 220,
@@ -92,13 +109,19 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                           fontSize: 52.sp,
                           fontWeight: FontWeight.w400,
                           fontFamily: 'Family',
-                          color: controller.selectedNarrator.value == 'Ewan' ? kWhiteColor : kPrimaryColor,
+                          color: controller.selectedNarrator.value == 'Ewan'
+                              ? kWhiteColor
+                              : kPrimaryColor,
                         ),
                       ),
                       //SizedBox(height: 5.h,),
                       Text(
                         'Voix adulte et calme.',
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, fontFamily: 'Metropolis', color: Color(0xffC1C1C1)),
+                        style: TextStyle(
+                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: 'Metropolis',
+                            color: Color(0xffC1C1C1)),
                       ),
                     ],
                   ),

@@ -12,18 +12,26 @@ import '../../utils/app_colors.dart';
 class CustomBookTileWidget extends StatelessWidget {
   final StoriesModel storiesList;
   final Story storyLocal;
-  CustomBookTileWidget({super.key, required this.storiesList, required this.storyLocal});
+  CustomBookTileWidget(
+      {super.key, required this.storiesList, required this.storyLocal});
 
   @override
   Widget build(BuildContext context) {
     List<String> duration = storiesList.totalDuration.split(":");
-    String totalDuration = duration[0] != "00" ? " (${duration[0]} hr. ${duration[1]} min. ${duration[2]})" : " (${duration[1]} min. ${duration[2]})";
+    String totalDuration = duration[0] != "00"
+        ? " (${duration[0]} hr. ${duration[1]} min. ${duration[2]})"
+        : " (${duration[1]} min. ${duration[2]})";
 
     DateTime dateTime = DateFormat("hh:mm:ss").parse(storiesList.totalDuration);
-    Duration totalStoryDuration =
-        Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond);
-    print('=================totalStoryDuration.inMilliseconds.toDouble() ${totalStoryDuration.inMilliseconds.toDouble()}');
-    print('=================storiesList.durationPlayed ${storyLocal.durationPlayed}');
+    Duration totalStoryDuration = Duration(
+        hours: dateTime.hour,
+        minutes: dateTime.minute,
+        seconds: dateTime.second,
+        milliseconds: dateTime.millisecond);
+    print(
+        '=================totalStoryDuration.inMilliseconds.toDouble() ${totalStoryDuration.inMilliseconds.toDouble()}');
+    print(
+        '=================storiesList.durationPlayed ${storyLocal.durationPlayed}');
 
     //Get Played Duration of story
     Duration playedDuration = Duration();
@@ -34,13 +42,19 @@ class CustomBookTileWidget extends StatelessWidget {
           : */
           DateFormat("hh:mm:ss").parse(storyLocal.durationPlayed);
       print('===============dateTime ${dateTime.hour}');
-      playedDuration = Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond);
+      playedDuration = Duration(
+          hours: dateTime.hour,
+          minutes: dateTime.minute,
+          seconds: dateTime.second,
+          milliseconds: dateTime.millisecond);
     }
     return Container(
-        padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 10.w, right: 10.w),
-        margin: EdgeInsets.only(top: 30.h),
+        padding:
+            EdgeInsets.only(top: 10.h, bottom: 10.h, left: 10.w, right: 10.w),
+        margin: EdgeInsets.only(top: 20.h),
         width: Get.width,
-        decoration: BoxDecoration(color: kBookTileBg, borderRadius: BorderRadius.circular(9)),
+        decoration: BoxDecoration(
+            color: kBookTileBg, borderRadius: BorderRadius.circular(9)),
         // height: Get.height * 0.10,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,38 +66,48 @@ class CustomBookTileWidget extends StatelessWidget {
                   width: 80.w,
                   height: 80.h,
                 ),*/
-                Image.network(
-                  width: 50,
-                  height: 50,
-                  storiesList.storyThumbnail,
-                  fit: BoxFit.cover,
-                  frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                    return child;
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      // width: MediaQuery.of(context).size.width,
-                      height: 100,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: kPrimaryColor,
+                Container(
+                  width: Get.width * 0.18,
+                  height: Get.height * 0.09,
+                  child: Image.network(
+                    // width: 75.w,
+                    // height: 75.w,
+                    storiesList.storyThumbnail,
+                    fit: BoxFit.fill,
+                    frameBuilder:
+                        (context, child, frame, wasSynchronouslyLoaded) {
+                      return child;
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return SizedBox(
+                        // width: MediaQuery.of(context).size.width,
+                        height: 100,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: kPrimaryColor,
+                          ),
                         ),
+                      );
+                    },
+                    errorBuilder: (context, url, error) => SizedBox(
+                      child: Center(
+                        child: Text("!",
+                            style: TextStyle(
+                                fontSize: 18.sp,
+                                height: 1.2,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Metropolis',
+                                color: kBlackColor)),
                       ),
-                    );
-                  },
-                  errorBuilder: (context, url, error) => SizedBox(
-                    child: Center(
-                      child: Text("!",
-                          style: TextStyle(fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w500, fontFamily: 'Metropolis', color: kBlackColor)),
                     ),
                   ),
                 ),
                 SizedBox(
-                  width: 25.w,
+                  width: 10.w,
                 ),
                 Container(
-                  width: Get.width * 0.50,
+                  width: Get.width * 0.55,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -92,8 +116,12 @@ class CustomBookTileWidget extends StatelessWidget {
                           text: TextSpan(children: [
                         TextSpan(
                             text: storiesList.storyName,
-                            style:
-                                TextStyle(fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w500, fontFamily: 'Metropolis', color: kBlackColor)),
+                            style: TextStyle(
+                                fontSize: 18.sp,
+                                height: 1.2,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Metropolis',
+                                color: kBlackColor)),
                         TextSpan(
                             text: totalDuration,
                             style: TextStyle(
@@ -108,9 +136,16 @@ class CustomBookTileWidget extends StatelessWidget {
                       ),
                       SliderTheme(
                           data: SliderThemeData(
-                              overlayShape: SliderComponentShape.noOverlay, thumbShape: RoundSliderOverlayShape(overlayRadius: 0), trackHeight: 10),
+                              // trackShape: RoundedRectSliderTrackShape(),
+                              overlayShape: SliderComponentShape.noOverlay,
+                              thumbShape:
+                                  RoundSliderOverlayShape(overlayRadius: 0),
+                              trackHeight: 10),
                           child: Slider(
-                            value: min(storyLocal.durationPlayed.isNotEmpty ? playedDuration.inMilliseconds.toDouble() : 0,
+                            value: min(
+                                storyLocal.durationPlayed.isNotEmpty
+                                    ? playedDuration.inMilliseconds.toDouble()
+                                    : 0,
                                 totalStoryDuration.inMilliseconds.toDouble()),
                             //value: storyLocal.durationPlayed.isNotEmpty ? playedDuration.inMilliseconds.toDouble() : 0,
                             onChanged: (value) {},

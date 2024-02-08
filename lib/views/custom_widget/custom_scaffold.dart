@@ -11,7 +11,10 @@ class CustomScaffold extends StatefulWidget {
   final String screenName;
   final int bottomBarIndex;
   final String? subScreenName;
-  final Function? onWillPop, gestureDetectorOnTap, gestureDetectorOnPanDown, onNotificationListener;
+  final Function? onWillPop,
+      gestureDetectorOnTap,
+      gestureDetectorOnPanDown,
+      onNotificationListener;
   VoidCallback? onBackButtonPressed;
   final GlobalKey<ScaffoldState> scaffoldKey;
   final Widget? gridview;
@@ -24,7 +27,7 @@ class CustomScaffold extends StatefulWidget {
   List<PopupMenuItem<int>> listOfPopupMenuItems = [];
   List<Widget>? actions = [];
   Widget? floatingActionButton;
-  double leadingWidth = 56;
+  double leadingWidth = 64;
   EdgeInsets padding = EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0);
 
   CustomScaffold(
@@ -39,7 +42,8 @@ class CustomScaffold extends StatefulWidget {
       this.onNotificationListener,
       required this.scaffoldKey,
       required this.body,
-      this.padding = const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
+      this.padding =
+          const EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0),
       this.gridview,
       this.bottomBarIndex = 0,
       this.showAppBarProfile = false,
@@ -48,7 +52,7 @@ class CustomScaffold extends StatefulWidget {
       this.isFullBody = false,
       this.bottomNavigationBar,
       this.floatingActionButton,
-      this.leadingWidth = 56,
+      this.leadingWidth = 64,
       this.listOfPopupMenuItems = const [],
       this.actions = const []});
 
@@ -59,8 +63,9 @@ class CustomScaffold extends StatefulWidget {
 class _CustomScaffoldState extends State<CustomScaffold> {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle.dark.copyWith(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.dark));
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark.copyWith(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.dark));
     return WillPopScope(
         onWillPop: () {
           if (widget.onWillPop != null) {
@@ -131,13 +136,16 @@ class _CustomScaffoldState extends State<CustomScaffold> {
                     ),
               extendBodyBehindAppBar: true,
               bottomNavigationBar: widget.bottomNavigationBar != null
-                  ? Container(margin: EdgeInsets.only(left: 20, right: 20), child: widget.bottomNavigationBar)
+                  ? Container(
+                      margin: EdgeInsets.only(left: 20, right: 20),
+                      child: widget.bottomNavigationBar)
                   : Container(
                       width: 0,
                       height: 0,
                     ),
               floatingActionButton: widget.floatingActionButton,
-              floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.endDocked,
             ),
           ),
         ));

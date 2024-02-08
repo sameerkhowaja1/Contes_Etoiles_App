@@ -16,6 +16,7 @@ class StoryPlayerScreen extends GetView<StoryScreenController> {
     return CustomScaffold(
       className: runtimeType.toString(),
       screenName: "Tu écoutes...",
+      padding: EdgeInsets.only(left: 40.w, right: 40.w),
       scaffoldKey: controller.scaffoldKey,
       onBackButtonPressed: () async {
         controller.player.stop();
@@ -53,30 +54,56 @@ class StoryPlayerScreen extends GetView<StoryScreenController> {
               return Dismissible(
                 key: ValueKey(position),
                 confirmDismiss: (DismissDirection direction) async {
-                  if (direction == DismissDirection.startToEnd && controller.storyIndex > 0) {
+                  if (direction == DismissDirection.startToEnd &&
+                      controller.storyIndex > 0) {
                     print('==================swiping left');
                     controller.player.stop();
-                    if (controller.setPlayerDuration().inMilliseconds.toDouble() < controller.audioPlayerPosition.inMilliseconds.toDouble()) {
-                      await LocalDbServices.updateStoriesTime(controller.storyTileList[controller.storyIndex.value].storyId,
-                          controller.audioPlayerPosition.toString(), controller.reamingAudioMinutes.toString());
+                    if (controller
+                            .setPlayerDuration()
+                            .inMilliseconds
+                            .toDouble() <
+                        controller.audioPlayerPosition.inMilliseconds
+                            .toDouble()) {
+                      await LocalDbServices.updateStoriesTime(
+                          controller.storyTileList[controller.storyIndex.value]
+                              .storyId,
+                          controller.audioPlayerPosition.toString(),
+                          controller.reamingAudioMinutes.toString());
 
-                      Story storyyyyy = await LocalDbServices.storyById(controller.storyLocal[controller.storyIndex.value].storyId);
+                      Story storyyyyy = await LocalDbServices.storyById(
+                          controller
+                              .storyLocal[controller.storyIndex.value].storyId);
 
-                      controller.storyLocal[controller.storyIndex.value] = storyyyyy;
+                      controller.storyLocal[controller.storyIndex.value] =
+                          storyyyyy;
                     }
                     controller.storyIndex--;
 
                     controller.initStory();
-                  } else if (direction == DismissDirection.endToStart && controller.storyIndex < (controller.storyTileList.length - 1)) {
-                    print('==================swiping right ${controller.storyIndex}');
+                  } else if (direction == DismissDirection.endToStart &&
+                      controller.storyIndex <
+                          (controller.storyTileList.length - 1)) {
+                    print(
+                        '==================swiping right ${controller.storyIndex}');
                     controller.player.stop();
-                    if (controller.setPlayerDuration().inMilliseconds.toDouble() < controller.audioPlayerPosition.inMilliseconds.toDouble()) {
-                      await LocalDbServices.updateStoriesTime(controller.storyTileList[controller.storyIndex.value].storyId,
-                          controller.audioPlayerPosition.toString(), controller.reamingAudioMinutes.toString());
+                    if (controller
+                            .setPlayerDuration()
+                            .inMilliseconds
+                            .toDouble() <
+                        controller.audioPlayerPosition.inMilliseconds
+                            .toDouble()) {
+                      await LocalDbServices.updateStoriesTime(
+                          controller.storyTileList[controller.storyIndex.value]
+                              .storyId,
+                          controller.audioPlayerPosition.toString(),
+                          controller.reamingAudioMinutes.toString());
 
-                      Story storyyyyy = await LocalDbServices.storyById(controller.storyLocal[controller.storyIndex.value].storyId);
+                      Story storyyyyy = await LocalDbServices.storyById(
+                          controller
+                              .storyLocal[controller.storyIndex.value].storyId);
 
-                      controller.storyLocal[controller.storyIndex.value] = storyyyyy;
+                      controller.storyLocal[controller.storyIndex.value] =
+                          storyyyyy;
                     }
                     controller.storyIndex++;
 
@@ -89,36 +116,50 @@ class StoryPlayerScreen extends GetView<StoryScreenController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      height: 140.h,
+                      height: 90.h,
                     ),
                     Center(
                       child: Obx(
                         () => controller.storyTileList.isNotEmpty
-                            ? Image.network(
-                                width: 300.w,
-                                height: 300.h,
-                                controller.storyTileList[controller.storyIndex.value].storyThumbnail,
-                                fit: BoxFit.cover,
-                                frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                                  return child;
-                                },
-                                loadingBuilder: (context, child, loadingProgress) {
-                                  if (loadingProgress == null) return child;
-                                  return Container(
-                                    // width: MediaQuery.of(context).size.width,
-                                    height: 100,
-                                    child: const Center(
-                                      child: CircularProgressIndicator(
-                                        color: kPrimaryColor,
+                            ? Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20.r)),
+                                margin:
+                                    EdgeInsets.only(left: 10.w, right: 10.w),
+                                child: Image.network(
+                                  controller
+                                      .storyTileList[
+                                          controller.storyIndex.value]
+                                      .storyThumbnail,
+                                  fit: BoxFit.cover,
+                                  frameBuilder: (context, child, frame,
+                                      wasSynchronouslyLoaded) {
+                                    return child;
+                                  },
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+                                    return Container(
+                                      // width: MediaQuery.of(context).size.width,
+                                      height: 100,
+                                      child: const Center(
+                                        child: CircularProgressIndicator(
+                                          color: kPrimaryColor,
+                                        ),
                                       ),
+                                    );
+                                  },
+                                  errorBuilder: (context, url, error) =>
+                                      SizedBox(
+                                    child: Center(
+                                      child: Text("!",
+                                          style: TextStyle(
+                                              fontSize: 18.sp,
+                                              height: 1.2,
+                                              fontWeight: FontWeight.w500,
+                                              fontFamily: 'Metropolis',
+                                              color: kBlackColor)),
                                     ),
-                                  );
-                                },
-                                errorBuilder: (context, url, error) => SizedBox(
-                                  child: Center(
-                                    child: Text("!",
-                                        style: TextStyle(
-                                            fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w500, fontFamily: 'Metropolis', color: kBlackColor)),
                                   ),
                                 ),
                               )
@@ -129,12 +170,21 @@ class StoryPlayerScreen extends GetView<StoryScreenController> {
                       height: 90.h,
                     ),
                     Container(
-                        width: Get.width * 0.50,
+                        width: Get.width,
+                        margin: EdgeInsets.only(left: 30.w, right: 30.w),
                         child: Obx(
                           () => Text(
                             textAlign: TextAlign.center,
-                            controller.storyTileList.isNotEmpty ? controller.storyTileList[controller.storyIndex.value].storyName : "",
-                            style: TextStyle(fontSize: 23.sp, fontFamily: 'Metropolis', color: kWhiteColor, fontWeight: FontWeight.w500),
+                            controller.storyTileList.isNotEmpty
+                                ? controller
+                                    .storyTileList[controller.storyIndex.value]
+                                    .storyName
+                                : "",
+                            style: TextStyle(
+                                fontSize: 20.sp,
+                                fontFamily: 'Metropolis',
+                                color: kWhiteColor,
+                                fontWeight: FontWeight.w500),
                           ),
                         )),
                     SizedBox(
@@ -148,11 +198,16 @@ class StoryPlayerScreen extends GetView<StoryScreenController> {
                           return controller.storyTileList.isNotEmpty
                               ? SeekBar(
                                   controller: controller,
-                                  duration: positionData?.duration ?? Duration.zero,
-                                  position: positionData?.position ?? Duration.zero,
-                                  bufferedPosition: positionData?.bufferedPosition ?? Duration.zero,
+                                  duration:
+                                      positionData?.duration ?? Duration.zero,
+                                  position:
+                                      positionData?.position ?? Duration.zero,
+                                  bufferedPosition:
+                                      positionData?.bufferedPosition ??
+                                          Duration.zero,
                                   onChangeEnd: (newPosition) {
-                                    print('===============new pos $newPosition');
+                                    print(
+                                        '===============new pos $newPosition');
                                     controller.player.seek(newPosition);
                                   },
                                 )
@@ -160,57 +215,9 @@ class StoryPlayerScreen extends GetView<StoryScreenController> {
                         },
                       ),
                     ),
-                    /* SliderTheme(
-                      data: SliderThemeData(
-                          overlayShape: SliderComponentShape.noOverlay, thumbShape: RoundSliderOverlayShape(overlayRadius: 0), trackHeight: 5),
-                      child: Slider(
-                        value: 60,
-                        onChanged: (newPosition) {},
-                        activeColor: kPrimaryColor,
-                        inactiveColor: kWhiteColor,
-                        min: 0,
-                        max: 100,
-                      )),*/
-                    /* SizedBox(
-                    height: 40.h,
-                  ),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          '0:36',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Metropolis',
-                            color: kWhiteColor,
-                          ),
-                        ),
-                        IconButton(onPressed: () {}, icon: Image.asset(width: 48, height: 48, kSkipPreviousIcon, color: kWhiteColor)),
-                        Obx(
-                          () => Container(
-                              padding: EdgeInsets.all(5),
-                              decoration: BoxDecoration(color: kPrimaryColor, borderRadius: BorderRadius.circular(50)),
-                              child: Icon(
-                                controller.isPlaying.value == false ? Icons.play_arrow_rounded : Icons.pause_rounded,
-                                color: kWhiteColor,
-                                size: 60,
-                              )),
-                        ),
-                        IconButton(onPressed: () {}, icon: Image.asset(width: 48, height: 48, kSkipNextIcon, color: kWhiteColor)),
-                        Text(
-                          '3:40',
-                          style: TextStyle(
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Metropolis',
-                            color: kWhiteColor,
-                          ),
-                        ),
-                      ],
+                    SizedBox(
+                      height: 70.h,
                     ),
-                  )*/
                   ],
                 ),
               );
