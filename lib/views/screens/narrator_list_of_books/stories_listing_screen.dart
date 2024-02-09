@@ -52,7 +52,6 @@ class StoriesListingScreen extends GetView<StoriesListingController> {
                                     });
 
                                     if (value == true) {
-                                      print('===============hey I am true');
                                       controller.getAllStories(controller.selectedNarrator.value);
                                       //controller.storyListLocal.value = value;
                                     }

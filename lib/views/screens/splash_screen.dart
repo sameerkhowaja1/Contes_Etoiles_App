@@ -1,6 +1,5 @@
 import 'package:contes_etoiles/utils/app_images.dart';
 import 'package:contes_etoiles/utils/app_strings.dart';
-import 'package:contes_etoiles/utils/app_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -23,9 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         width: Get.width,
         height: Get.height,
-        decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(kSplashBg), fit: BoxFit.fill)),
+        decoration: BoxDecoration(image: DecorationImage(image: AssetImage(kSplashBg), fit: BoxFit.fill)),
         child: Stack(
           children: [
             Positioned(
@@ -33,9 +30,9 @@ class _SplashScreenState extends State<SplashScreen> {
                 left: 20.w,
                 child: InkWell(
                     onTap: () {
-                      showDialog(
+                      showGeneralDialog(
                         context: context,
-                        builder: (context) {
+                        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
                           return Dialog(
                             backgroundColor: kBlackColor.withOpacity(0.80),
                             insetPadding: EdgeInsets.zero,

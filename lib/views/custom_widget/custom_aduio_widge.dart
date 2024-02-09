@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:contes_etoiles/database/local_db_services.dart';
 import 'package:contes_etoiles/utils/app_colors.dart';
 import 'package:contes_etoiles/views/screens/story_screen/controller/story_player_screen_controller.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:just_audio/just_audio.dart';
 
-import '../../database/database.dart';
 import '../../utils/app_images.dart';
 
 class SeekBar extends StatelessWidget {
@@ -52,21 +50,60 @@ class SeekBarState extends State<SeekBar> {
       children: [
         Stack(
           children: [
-            SliderTheme(
-              data: SliderThemeData(
-                overlayShape: SliderComponentShape.noOverlay,
-                trackHeight: 5,
-                thumbShape: HiddenThumbComponentShape(),
-                activeTrackColor: kPrimaryLightColor,
-                inactiveTrackColor: Colors.grey.shade300,
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              child: SliderTheme(
+                data: SliderThemeData(
+                  overlayShape: SliderComponentShape.noOverlay,
+                  trackHeight: 5,
+                  thumbShape: HiddenThumbComponentShape(),
+                  activeTrackColor: kPrimaryLightColor,
+                  inactiveTrackColor: Colors.grey.shade300,
+                ),
+                child: ExcludeSemantics(
+                  child: Slider(
+                    min: 0.0,
+                    max: duration.inMilliseconds.toDouble(),
+                    value: min(bufferedPosition.inMilliseconds.toDouble(), duration.inMilliseconds.toDouble()),
+                    onChanged: (value) {
+                      //setState(() {
+                      controller.dragValue?.value = value;
+                      //});
+                      if (onChanged != null) {
+                        onChanged!(Duration(milliseconds: value.round()));
+                      }
+                    },
+                    onChangeEnd: (value) {
+                      if (onChangeEnd != null) {
+                        onChangeEnd!(Duration(milliseconds: value.round()));
+                      }
+                      controller.dragValue = null;
+                    },
+                  ),
+                ),
               ),
-              child: ExcludeSemantics(
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(12)),
+              child: SliderTheme(
+                data: SliderThemeData(
+                  overlayShape: SliderComponentShape.noOverlay,
+                  thumbShape: RoundSliderOverlayShape(overlayRadius: 0),
+                  trackHeight: 5,
+                  inactiveTrackColor: Colors.transparent,
+                ),
                 child: Slider(
                   min: 0.0,
                   max: duration.inMilliseconds.toDouble(),
-                  value: min(bufferedPosition.inMilliseconds.toDouble(), duration.inMilliseconds.toDouble()),
+                  value: min(
+                      controller.dragValue?.value != null
+                          ? controller.dragValue!.value
+                          : controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble()
+                              ? controller.setPlayerDuration().inMilliseconds.toDouble()
+                              : position.inMilliseconds.toDouble(),
+                      duration.inMilliseconds.toDouble()),
                   onChanged: (value) {
-                    //setState(() {
+                    // setState(() {
                     controller.dragValue?.value = value;
                     //});
                     if (onChanged != null) {
@@ -80,40 +117,6 @@ class SeekBarState extends State<SeekBar> {
                     controller.dragValue = null;
                   },
                 ),
-              ),
-            ),
-            SliderTheme(
-              data: SliderThemeData(
-                overlayShape: SliderComponentShape.noOverlay,
-                thumbShape: RoundSliderOverlayShape(overlayRadius: 0),
-                trackHeight: 5,
-                inactiveTrackColor: Colors.transparent,
-              ),
-              child: Slider(
-                min: 0.0,
-                max: duration.inMilliseconds.toDouble(),
-                value: min(
-                    controller.dragValue?.value != null
-                        ? controller.dragValue!.value
-                        : controller.setPlayerDuration().inMilliseconds.toDouble() > position.inMilliseconds.toDouble()
-                            ? controller.setPlayerDuration().inMilliseconds.toDouble()
-                            : position.inMilliseconds.toDouble(),
-                    duration.inMilliseconds.toDouble()),
-                onChanged: (value) {
-                  // setState(() {
-                  controller.dragValue?.value = value;
-                  print('===========on change $value');
-                  //});
-                  if (onChanged != null) {
-                    onChanged!(Duration(milliseconds: value.round()));
-                  }
-                },
-                onChangeEnd: (value) {
-                  if (onChangeEnd != null) {
-                    onChangeEnd!(Duration(milliseconds: value.round()));
-                  }
-                  controller.dragValue = null;
-                },
               ),
             ),
           ],
@@ -154,9 +157,9 @@ class SeekBarState extends State<SeekBar> {
                                 print(
                                     '===============backward btn clicked 2 --- ${controller.setPlayerDuration().inMilliseconds.toDouble()} ==== ${position.inMilliseconds.toDouble()}');
 
-                                if (controller.setPlayerDuration().inMilliseconds.toDouble() < position.inMilliseconds.toDouble()) {
-                                  /* controller.storyLocal[controller.storyIndex.value]
-                                      .copyWith(durationPlayed: position.toString(), remainingDuration: _remaining.toString());*/
+                                /*if (controller.setPlayerDuration().inMilliseconds.toDouble() < position.inMilliseconds.toDouble()) {
+                                  */ /* controller.storyLocal[controller.storyIndex.value]
+                                      .copyWith(durationPlayed: position.toString(), remainingDuration: _remaining.toString());*/ /*
                                   await LocalDbServices.updateStoriesTime(
                                       controller.storyTileList[controller.storyIndex.value].storyId, position.toString(), _remaining.toString());
 
@@ -168,7 +171,8 @@ class SeekBarState extends State<SeekBar> {
                                 }
                                 controller.player.stop();
                                 controller.storyIndex--;
-                                controller.initStory();
+                                controller.initStory();*/
+                                controller.pageController.previousPage(duration: Duration(milliseconds: 200), curve: Curves.ease);
                               },
                         icon: Image.asset(
                             width: 48, height: 48, kSkipPreviousIcon, color: controller.storyIndex.value == 0 ? kGreyColor : kWhiteColor))),
@@ -193,15 +197,15 @@ class SeekBarState extends State<SeekBar> {
                       //todo: update played time to local db
                       if (position.inMilliseconds.toDouble() > 0) {
                         if (controller.totalDuration().inSeconds == position.inSeconds) {
-                          print('========hey its finisged');
-
                           controller.updateStoryTimeInLocalDB(
                               storyId: controller.storyTileList[controller.storyIndex.value].storyId, position: "", remaining: "");
                         } else {
-                          controller.updateStoryTimeInLocalDB(
-                              storyId: controller.storyTileList[controller.storyIndex.value].storyId,
-                              position: position.toString(),
-                              remaining: _remaining.toString());
+                          if (controller.storyTileList.isNotEmpty) {
+                            controller.updateStoryTimeInLocalDB(
+                                storyId: controller.storyTileList[controller.storyIndex.value].storyId,
+                                position: position.toString(),
+                                remaining: _remaining.toString());
+                          }
                         }
 
                         /*LocalDbServices.updateStoriesTime(
@@ -284,28 +288,25 @@ class SeekBarState extends State<SeekBar> {
                           onPressed: controller.storyIndex.value == controller.storyTileList.length - 1
                               ? null
                               : () async {
-                                  controller.player.stop();
                                   print(
                                       '===============forward btn clicked${controller.setPlayerDuration().inMilliseconds.toDouble() < position.inMilliseconds.toDouble()}');
                                   print(
                                       '===============forward btn clicked 2 --- ${controller.setPlayerDuration().inMilliseconds.toDouble()} ==== ${position.inMilliseconds.toDouble()}');
+                                  /*controller.player.stop();
                                   if (controller.setPlayerDuration().inMilliseconds.toDouble() < position.inMilliseconds.toDouble()) {
-                                    /*controller.storyLocal[controller.storyIndex.value]
-                                        .copyWith(durationPlayed: position.toString(), remainingDuration: _remaining.toString());*/
+                                    */ /*controller.storyLocal[controller.storyIndex.value]
+                                        .copyWith(durationPlayed: position.toString(), remainingDuration: _remaining.toString());*/ /*
 
                                     await LocalDbServices.updateStoriesTime(
                                         controller.storyTileList[controller.storyIndex.value].storyId, position.toString(), _remaining.toString());
 
-                                    print('=================played duraiton ${position.inSeconds.toDouble()}');
                                     Story storyyyyy = await LocalDbServices.storyById(controller.storyLocal[controller.storyIndex.value].storyId);
-                                    print('=================played duraiton get ${storyyyyy.durationPlayed}');
                                     controller.storyLocal[controller.storyIndex.value] = storyyyyy;
-                                    print(
-                                        '=================played duraiton set ${controller.storyLocal[controller.storyIndex.value].durationPlayed}');
-                                  }
+                                     }
 
                                   controller.storyIndex++;
-                                  controller.initStory();
+                                  controller.initStory();*/
+                                  controller.pageController.nextPage(duration: Duration(milliseconds: 200), curve: Curves.ease);
                                 },
                           icon: Image.asset(
                               width: 48,

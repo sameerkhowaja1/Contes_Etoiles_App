@@ -25,7 +25,6 @@ class FirebaseHelper {
           StoriesModel storiesModel = StoriesModel.fromJson(d.data() as Map<String, dynamic>);
           storiesModelList.add(storiesModel);
         }
-        print('================storiesModelList ${storiesModelList.length}');
       } else {
         // Get.back();
         showCustomSnackBar(content: kInternetNotAvailable);

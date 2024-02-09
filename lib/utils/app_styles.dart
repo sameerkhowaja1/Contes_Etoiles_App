@@ -6,7 +6,7 @@ import 'app_colors.dart';
 
 class AppStyles {
   static TextStyle labelTextStyle() => GoogleFonts.urbanist(fontSize: 14.sp, fontWeight: FontWeight.w500, color: kPrimaryColor);
-  static TextStyle appBarHeadingTextStyle() => GoogleFonts.urbanist(fontSize: 24.sp, fontWeight: FontWeight.w700, color: kBlackColor);
+  static TextStyle appBarHeadingTextStyle() => GoogleFonts.urbanist(fontSize: 14.sp, fontWeight: FontWeight.w400, color: kBlackColor);
   static BoxDecoration get outlineBlack => BoxDecoration(
         color: kWhiteColor,
         boxShadow: [
@@ -29,13 +29,13 @@ class AppStyles {
       );
 
   static ButtonStyle get fillGreen => ElevatedButton.styleFrom(
-       // backgroundColor: kGreenBgColor,
+        // backgroundColor: kGreenBgColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.w),
         ),
       );
   static ButtonStyle get fillOrangeBg => ElevatedButton.styleFrom(
-      //  backgroundColor: kOrangeBgColor,
+        //  backgroundColor: kOrangeBgColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16.w),
         ),

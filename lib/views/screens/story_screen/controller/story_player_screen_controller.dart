@@ -3,6 +3,7 @@ import 'package:contes_etoiles/model/stories_model.dart';
 import 'package:contes_etoiles/utils/custom_snackbar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swipe_detector/flutter_swipe_detector.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:just_audio/just_audio.dart';
@@ -50,6 +51,15 @@ class StoryScreenController extends GetxController with WidgetsBindingObserver {
     storyTileList.value = Get.arguments["storiesList"];
     storyIndex.value = Get.arguments["storyIndex"];
     storyLocal.value = Get.arguments["storyLocal"];
+    pageController = PageController(
+      initialPage: storyIndex.value,
+    );
+    /*pageController.addListener(() {
+      print('==========hello');
+      pageController.jumpToPage(storyIndex.value);
+      print('==================inital offset${pageController.page?.round()}');
+    });*/
+
     if (storyLocal[storyIndex.value].durationPlayed.isNotEmpty) {
       DateTime dateTime = DateFormat("hh:mm:ss.SSS").parse(storyLocal[storyIndex.value].durationPlayed);
       audioPlayerPosition = Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond);
@@ -61,6 +71,26 @@ class StoryScreenController extends GetxController with WidgetsBindingObserver {
           milliseconds: remainingDateTime.millisecond);
     }
     initStory();
+  }
+
+  Future<void> addSwipe(SwipeDirection direction) async {
+    // Here, you can handle the detected swipes accordingly.
+    print('Swiped in ${direction.toString()} direction');
+
+    if (direction == SwipeDirection.right && storyIndex > 0) {
+      player.stop();
+      if (setPlayerDuration().inMilliseconds.toDouble() < audioPlayerPosition.inMilliseconds.toDouble()) {
+        await LocalDbServices.updateStoriesTime(
+            storyTileList[storyIndex.value].storyId, audioPlayerPosition.toString(), reamingAudioMinutes.toString());
+
+        Story storyyyyy = await LocalDbServices.storyById(storyLocal[storyIndex.value].storyId);
+
+        storyLocal[storyIndex.value] = storyyyyy;
+      }
+      storyIndex--;
+
+      initStory();
+    }
   }
 
   Duration totalDuration() {
@@ -151,7 +181,6 @@ class StoryScreenController extends GetxController with WidgetsBindingObserver {
   @override
   void onClose() {
     super.onClose();
-    print('===============Hi from close');
     player.dispose();
   }
 
@@ -160,7 +189,6 @@ class StoryScreenController extends GetxController with WidgetsBindingObserver {
     // TODO: implement dispose
     super.dispose();
     common.ambiguate(WidgetsBinding.instance)!.removeObserver(this);
-    print('===============Hi from dispose');
     player.pause();
     player.dispose();
   }

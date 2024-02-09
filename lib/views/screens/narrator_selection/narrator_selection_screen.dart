@@ -14,7 +14,7 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
     // TODO: implement build
     return CustomScaffold(
       className: runtimeType.toString(),
-      screenName: "Qui va te lire l’histoire?",
+      screenName: "Qui va te lire l’histoire?    ",
       scaffoldKey: controller.scaffoldKey,
       body: Container(
           color: kBlackColor,
@@ -55,9 +55,12 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                         ),
                       ),
                       //SizedBox(height: 5.h,),
-                      Text(
-                        'Voix enfantine et douce.',
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, fontFamily: 'Metropolis', color: Color(0xffC1C1C1)),
+                      Container(
+                        transform: Matrix4.translationValues(0.0, -12.0, 0.0),
+                        child: Text(
+                          'Voix enfantine et douce.',
+                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, fontFamily: 'Metropolis', color: Color(0xffC1C1C1)),
+                        ),
                       ),
                     ],
                   ),
@@ -96,9 +99,12 @@ class NarratorSelectionScreen extends GetView<NarratorSelectionController> {
                         ),
                       ),
                       //SizedBox(height: 5.h,),
-                      Text(
-                        'Voix adulte et calme.',
-                        style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, fontFamily: 'Metropolis', color: Color(0xffC1C1C1)),
+                      Container(
+                        transform: Matrix4.translationValues(0.0, -12.0, 0.0),
+                        child: Text(
+                          'Voix adulte et calme.',
+                          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.w400, fontFamily: 'Metropolis', color: Color(0xffC1C1C1)),
+                        ),
                       ),
                     ],
                   ),

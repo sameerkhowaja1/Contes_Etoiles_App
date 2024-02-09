@@ -22,9 +22,6 @@ class CustomBookTileWidget extends StatelessWidget {
     DateTime dateTime = DateFormat("hh:mm:ss").parse(storiesList.totalDuration);
     Duration totalStoryDuration =
         Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond);
-    print('=================totalStoryDuration.inMilliseconds.toDouble() ${totalStoryDuration.inMilliseconds.toDouble()}');
-    print('=================storiesList.durationPlayed ${storyLocal.durationPlayed}');
-
     //Get Played Duration of story
     Duration playedDuration = Duration();
     if (storyLocal.durationPlayed.isNotEmpty) {
@@ -33,12 +30,11 @@ class CustomBookTileWidget extends StatelessWidget {
           ? DateFormat("hh:mm:ss.SSS").parse(storyLocal.durationPlayed)
           : */
           DateFormat("hh:mm:ss").parse(storyLocal.durationPlayed);
-      print('===============dateTime ${dateTime.hour}');
       playedDuration = Duration(hours: dateTime.hour, minutes: dateTime.minute, seconds: dateTime.second, milliseconds: dateTime.millisecond);
     }
     return Container(
         padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: 10.w, right: 10.w),
-        margin: EdgeInsets.only(top: 30.h),
+        margin: EdgeInsets.only(top: 20.h),
         width: Get.width,
         decoration: BoxDecoration(color: kBookTileBg, borderRadius: BorderRadius.circular(9)),
         // height: Get.height * 0.10,
@@ -52,73 +48,108 @@ class CustomBookTileWidget extends StatelessWidget {
                   width: 80.w,
                   height: 80.h,
                 ),*/
-                Image.network(
-                  width: 50,
-                  height: 50,
-                  storiesList.storyThumbnail,
-                  fit: BoxFit.cover,
-                  frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
-                    return child;
-                  },
-                  loadingBuilder: (context, child, loadingProgress) {
-                    if (loadingProgress == null) return child;
-                    return Container(
-                      // width: MediaQuery.of(context).size.width,
-                      height: 100,
-                      child: const Center(
-                        child: CircularProgressIndicator(
-                          color: kPrimaryColor,
+                Container(
+                  width: Get.width * 0.18,
+                  height: Get.height * 0.09,
+                  child: Image.network(
+                    // width: 75.w,
+                    // height: 75.w,
+                    storiesList.storyThumbnail,
+                    fit: BoxFit.fill,
+                    frameBuilder: (context, child, frame, wasSynchronouslyLoaded) {
+                      return child;
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return SizedBox(
+                        // width: MediaQuery.of(context).size.width,
+                        height: 100,
+                        child: const Center(
+                          child: CircularProgressIndicator(
+                            color: kPrimaryColor,
+                          ),
                         ),
+                      );
+                    },
+                    errorBuilder: (context, url, error) => SizedBox(
+                      child: Center(
+                        child: Text("!",
+                            style:
+                                TextStyle(fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w500, fontFamily: 'Metropolis', color: kBlackColor)),
                       ),
-                    );
-                  },
-                  errorBuilder: (context, url, error) => SizedBox(
-                    child: Center(
-                      child: Text("!",
-                          style: TextStyle(fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w500, fontFamily: 'Metropolis', color: kBlackColor)),
                     ),
                   ),
                 ),
                 SizedBox(
-                  width: 25.w,
+                  width: 10.w,
                 ),
                 Container(
-                  width: Get.width * 0.50,
+                  width: Get.width * 0.55,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      RichText(
-                          text: TextSpan(children: [
-                        TextSpan(
-                            text: storiesList.storyName,
-                            style:
-                                TextStyle(fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w500, fontFamily: 'Metropolis', color: kBlackColor)),
-                        TextSpan(
-                            text: totalDuration,
-                            style: TextStyle(
-                                fontSize: 15.sp,
-                                fontWeight: FontWeight.w400,
-                                fontFamily: 'Metropolis',
-                                fontStyle: FontStyle.italic,
-                                color: kGreyColor))
-                      ])),
+                      Container(
+                        width: Get.width * 0.90,
+                        child: storiesList.storyName.length <= 25
+                            ? Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Text(storiesList.storyName,
+                                      style: TextStyle(
+                                          fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w600, fontFamily: 'Metropolis', color: kBlackColor)),
+                                  Text(totalDuration,
+                                      style: TextStyle(
+                                          overflow: TextOverflow.visible,
+                                          fontSize: 15.sp,
+                                          height: 1.2,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: 'Metropolis',
+                                          fontStyle: FontStyle.italic,
+                                          color: kGreyColor))
+                                ],
+                              )
+                            : RichText(
+                                textAlign: TextAlign.left,
+                                text: TextSpan(children: [
+                                  TextSpan(
+                                      text: storiesList.storyName,
+                                      style: TextStyle(
+                                          fontSize: 18.sp, height: 1.2, fontWeight: FontWeight.w600, fontFamily: 'Metropolis', color: kBlackColor)),
+                                  TextSpan(
+                                      text: storiesList.storyName.length >= 38 ? "\n$totalDuration" : totalDuration,
+                                      style: TextStyle(
+                                          overflow: TextOverflow.visible,
+                                          fontSize: 15.sp,
+                                          height: 1.2,
+                                          fontWeight: FontWeight.w400,
+                                          fontFamily: 'Metropolis',
+                                          fontStyle: FontStyle.italic,
+                                          color: kGreyColor))
+                                ])),
+                      ),
                       SizedBox(
                         height: 25.h,
                       ),
-                      SliderTheme(
-                          data: SliderThemeData(
-                              overlayShape: SliderComponentShape.noOverlay, thumbShape: RoundSliderOverlayShape(overlayRadius: 0), trackHeight: 10),
-                          child: Slider(
-                            value: min(storyLocal.durationPlayed.isNotEmpty ? playedDuration.inMilliseconds.toDouble() : 0,
-                                totalStoryDuration.inMilliseconds.toDouble()),
-                            //value: storyLocal.durationPlayed.isNotEmpty ? playedDuration.inMilliseconds.toDouble() : 0,
-                            onChanged: (value) {},
-                            activeColor: kPrimaryColor,
-                            inactiveColor: kWhiteColor,
-                            min: 0.0,
-                            max: totalStoryDuration.inMilliseconds.toDouble(),
-                          ))
+                      ClipRRect(
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                        child: SliderTheme(
+                            data: const SliderThemeData(
+                                // trackShape: RoundedRectSliderTrackShape(),
+                                //trackShape: RoundSliderOverlayShape(overlayRadius: 0),
+                                overlayShape: RoundSliderOverlayShape(overlayRadius: 0),
+                                thumbShape: RoundSliderOverlayShape(overlayRadius: 0),
+                                trackHeight: 10),
+                            child: Slider(
+                              value: min(storyLocal.durationPlayed.isNotEmpty ? playedDuration.inMilliseconds.toDouble() : 0,
+                                  totalStoryDuration.inMilliseconds.toDouble()),
+                              //value: storyLocal.durationPlayed.isNotEmpty ? playedDuration.inMilliseconds.toDouble() : 0,
+                              onChanged: (value) {},
+                              activeColor: kPrimaryColor,
+                              inactiveColor: kWhiteColor,
+                              min: 0.0,
+                              max: totalStoryDuration.inMilliseconds.toDouble(),
+                            )),
+                      )
                     ],
                   ),
                 ),

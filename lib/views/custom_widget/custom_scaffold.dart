@@ -24,7 +24,7 @@ class CustomScaffold extends StatefulWidget {
   List<PopupMenuItem<int>> listOfPopupMenuItems = [];
   List<Widget>? actions = [];
   Widget? floatingActionButton;
-  double leadingWidth = 56;
+  double leadingWidth = 64;
   EdgeInsets padding = EdgeInsets.only(left: 20, right: 20, top: 0, bottom: 0);
 
   CustomScaffold(
@@ -48,7 +48,7 @@ class CustomScaffold extends StatefulWidget {
       this.isFullBody = false,
       this.bottomNavigationBar,
       this.floatingActionButton,
-      this.leadingWidth = 56,
+      this.leadingWidth = 64,
       this.listOfPopupMenuItems = const [],
       this.actions = const []});
 

@@ -17,7 +17,6 @@ class LocalDbServices {
           durationPlayed: "",
           totalDuration: storiesModel.totalDuration,
           remainingDuration: ""));
-      print('===============data added to local db ${storiesModel.storyId}');
     } catch (e) {
       print(e);
     }
@@ -40,9 +39,10 @@ class LocalDbServices {
   }
 
   static Future<Story> storyById(String storyId) {
-    print('===============stori ID $storyId');
     return (database.select(database.stories)..where((t) => t.storyId.equals(storyId))).getSingle();
   }
 
   static Future<List<Story>> get allStoriesData => ((database.select(database.stories)..where((t) => t.isActive.equals(true))).get());
+  static Future<List<Story>> allStoriesDataByNarrator(String narrator) =>
+      ((database.select(database.stories)..where((t) => t.isActive.equals(true) & t.storyNarrator.equals(narrator))).get());
 }

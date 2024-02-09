@@ -32,9 +32,8 @@ class StoriesListingController extends GetxController {
   getAllStories(String selectedNarrator) async {
     storyTileList.clear();
     showLoader.value = true;
-    print('=============selected Narrator $selectedNarrator');
     storyTileList.value = await FirebaseHelper.getAllStoriesByNarrator(selectedNarrator);
-    List<Story> story = await LocalDbServices.allStoriesData;
+    List<Story> story = await LocalDbServices.allStoriesDataByNarrator(selectedNarrator);
     //storyListLocal.value = story;
     if (storyTileList.isNotEmpty) {
       for (StoriesModel storiesModel in storyTileList) {
@@ -43,10 +42,9 @@ class StoriesListingController extends GetxController {
         }
       }
       story.clear();
-      story = await LocalDbServices.allStoriesData;
+      story = await LocalDbServices.allStoriesDataByNarrator(selectedNarrator);
       storyListLocal.value = story;
     }
     showLoader.value = false;
-    print('=================list length ${storyTileList.length}');
   }
 }
